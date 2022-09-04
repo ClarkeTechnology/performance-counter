@@ -13,7 +13,7 @@ use App\Tests\PerformanceCounterTest;
  * @see PerformanceCounterTest::average_process_time_can_be_obtained_for_multiple_keys for a demo
  * of how this works
  *
- * @author Gary Clarke <info@garyclarke.tech>
+ * @author Gary Clarke <clarketechnologyltd@gmail.com>
  */
 final class PerformanceCounter
 {
