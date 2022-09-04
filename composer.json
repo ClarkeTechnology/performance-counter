@@ -1,5 +1,5 @@
 {
-    "name": "clarketech/performance-counter",
+    "name": "clarketechnology/performance-counter",
     "require-dev": {
         "phpunit/phpunit": "^9.5"
     },
