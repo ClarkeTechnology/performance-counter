@@ -7,6 +7,10 @@
         {
             "name": "Gary Clarke",
             "email": "clarketechnologyltd@gmail.com"
+        },
+        {
+            "name": "Gary Clarke",
+            "email": "info@garyclarke.tech"
         }
     ],
     "autoload": {
