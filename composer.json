@@ -19,7 +19,9 @@
         }
     },
     "minimum-stability": "stable",
-    "require": {},
+    "require": {
+        "symfony/var-dumper": "^6.1"
+    },
     "require-dev": {
         "phpunit/phpunit": "^9.5"
     }
