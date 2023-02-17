@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Tests;
+namespace ClarkeTechnology\PerformanceCounter\Tests;
 
-use App\PerformanceCounter;
 use PHPUnit\Framework\TestCase;
+use ClarkeTechnology\PerformanceCounter\PerformanceCounter;
 
 class PerformanceCounterTest extends TestCase
 {
