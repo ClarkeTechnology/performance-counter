@@ -81,6 +81,11 @@ final class PerformanceCounter
         }
     }
 
+    public function all(): array
+    {
+        return array_combine($this->getKeys(), $this->totalElapsedTime);
+    }
+
     /**
      * Elapsed time between start and stop
      *
