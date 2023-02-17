@@ -86,6 +86,13 @@ final class PerformanceCounter
         return array_combine($this->getKeys(), $this->totalElapsedTime);
     }
 
+    public function stopAndShow():array
+    {
+        $this->stopAll();
+
+        return $this->all();
+    }
+
     /**
      * Elapsed time between start and stop
      *
