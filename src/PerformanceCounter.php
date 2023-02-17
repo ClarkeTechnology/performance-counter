@@ -2,8 +2,6 @@
 
 namespace ClarkeTechnology\PerformanceCounter;
 
-use App\Tests\PerformanceCounterTest;
-
 /**
  * Calculates the average iteration time for a given process
  *
@@ -39,7 +37,7 @@ final class PerformanceCounter
     /**
      * Capture the start time for one iteration for a given key
      */
-    public function timeIterationStart($key): void
+    public function start($key): void
     {
         if (!isset($this->iterationCount[$key])) {
             $this->iterationCount[$key] = 0;
@@ -54,7 +52,7 @@ final class PerformanceCounter
     /**
      * Capture the end time for one iteration for a given key
      */
-    public function timeIterationEnd($key): void
+    public function end($key): void
     {
         $endTime = microtime(true);
 
@@ -63,7 +61,12 @@ final class PerformanceCounter
         $this->averageIterationTime[$key] = $this->totalElapsedTime[$key] / max($this->iterationCount[$key], 1);
     }
 
-    public function getAverageIterationTime($key)
+    /**
+     * Elapsed time between start and stop
+     *
+     * If started and stopped within a loop, the average iteration time will be returned
+     */
+    public function elapsedTime($key): float
     {
         return $this->averageIterationTime[$key];
     }
@@ -86,9 +89,6 @@ final class PerformanceCounter
         $this->averageIterationTime = [];
     }
 
-    /**
-     * Get all timer keys
-     */
     public function getKeys(): array
     {
         return array_keys($this->iterationCount);
