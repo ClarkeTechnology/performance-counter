@@ -17,31 +17,36 @@ class PerformanceCounterTest extends TestCase
         $this->unit->reset();
     }
 
+    protected function tearDown(): void
+    {
+        unset($this->unit);
+    }
+
     /** @test */
     public function average_process_time_can_be_obtained_for_multiple_keys(): void
     {
-        $this->unit->timeIterationStart($this->counterKey1);
+        $this->unit->start($this->counterKey1);
 
         usleep(random_int(100, 100000));
 
         for ($i = 1; $i <= 5; $i++) {
-            $this->unit->timeIterationStart($this->counterKey2);
+            $this->unit->start($this->counterKey2);
             usleep(random_int(100, 100000));
-            $this->unit->timeIterationEnd($this->counterKey2);
+            $this->unit->end($this->counterKey2);
         }
 
-        $this->unit->timeIterationEnd($this->counterKey1);
+        $this->unit->end($this->counterKey1);
 
-        $this->assertGreaterThan(10, $this->unit->getAverageIterationTime($this->counterKey1));
-        $this->assertLessThan(100, $this->unit->getAverageIterationTime($this->counterKey2));
+        $this->assertGreaterThan(10, $this->unit->elapsedTime($this->counterKey1));
+        $this->assertLessThan(100, $this->unit->elapsedTime($this->counterKey2));
     }
 
     /** @test */
     public function a_key_can_be_cleared(): void
     {
-        $this->unit->timeIterationStart($this->counterKey1);
+        $this->unit->start($this->counterKey1);
 
-        $this->unit->timeIterationStart($this->counterKey2);
+        $this->unit->start($this->counterKey2);
 
         $this->unit->clearKey($this->counterKey2);
 
@@ -52,9 +57,9 @@ class PerformanceCounterTest extends TestCase
     /** @test */
     public function the_counter_can_be_reset(): void
     {
-        $this->unit->timeIterationStart($this->counterKey1);
+        $this->unit->start($this->counterKey1);
 
-        $this->unit->timeIterationStart($this->counterKey2);
+        $this->unit->start($this->counterKey2);
 
         $this->unit->reset();
 
