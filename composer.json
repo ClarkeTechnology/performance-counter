@@ -18,12 +18,8 @@
             "ClarkeTechnology\\PerformanceCounter\\": "src/"
         }
     },
-    "minimum-stability": "stable",
-    "require": {
-        "symfony/var-dumper": "^6.1"
-    },
+    "minimum-stability": "dev",
     "require-dev": {
-        "phpunit/phpunit": "^9.0",
-        "symfony/stopwatch": "^5.0"
+        "phpunit/phpunit": "^9.0"
     }
 }
