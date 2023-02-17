@@ -73,7 +73,9 @@ final class PerformanceCounter
     public function stopAll(): void
     {
         foreach ($this->getKeys() as $key) {
-            $this->stop($key);
+            if ($this->isRunning[$key]) {
+                $this->stop($key);
+            }
         }
     }
 
