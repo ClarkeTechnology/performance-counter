@@ -18,6 +18,11 @@
             "ClarkeTechnology\\PerformanceCounter\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "ClarkeTechnology\\PerformanceCounter\\Tests\\": "tests/"
+        }
+    },
     "minimum-stability": "dev",
     "require-dev": {
         "phpunit/phpunit": "^9.0"

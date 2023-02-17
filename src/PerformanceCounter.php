@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace ClarkeTechnology\PerformanceCounter;
 
 use App\Tests\PerformanceCounterTest;
 
@@ -17,7 +17,6 @@ use App\Tests\PerformanceCounterTest;
  */
 final class PerformanceCounter
 {
-    
     private static ?self $instance = null;
     private array $start = [];
     private array $iterationCount = [];
