@@ -63,6 +63,10 @@ final class PerformanceCounter
     {
         $endTime = microtime(true);
 
+        if (!$this->isRunning[$key]) {
+            return;
+        }
+
         $this->isRunning[$key] = false;
 
         $this->totalElapsedTime[$key] += round($endTime - $this->start[$key], 3) * 1000;
@@ -73,9 +77,7 @@ final class PerformanceCounter
     public function stopAll(): void
     {
         foreach ($this->getKeys() as $key) {
-            if ($this->isRunning[$key]) {
-                $this->stop($key);
-            }
+            $this->stop($key);
         }
     }
 
