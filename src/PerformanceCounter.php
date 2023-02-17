@@ -20,6 +20,7 @@ final class PerformanceCounter
     private array $iterationCount = [];
     private array $totalElapsedTime = [];
     private array $averageIterationTime = [];
+    private array $isRunning = [];
 
     private function __construct()
     {
@@ -42,6 +43,7 @@ final class PerformanceCounter
         if (!isset($this->iterationCount[$key])) {
             $this->iterationCount[$key] = 0;
             $this->totalElapsedTime[$key] = 0;
+            $this->isRunning[$key] = true;
         }
 
         $this->iterationCount[$key] ++;
@@ -49,16 +51,30 @@ final class PerformanceCounter
         $this->start[$key] = microtime(true);
     }
 
+    public function isRunning($key): bool
+    {
+        return $this->isRunning[$key];
+    }
+
     /**
      * Capture the end time for one iteration for a given key
      */
-    public function end($key): void
+    public function stop($key): void
     {
         $endTime = microtime(true);
+
+        $this->isRunning[$key] = false;
 
         $this->totalElapsedTime[$key] += round($endTime - $this->start[$key], 3) * 1000;
 
         $this->averageIterationTime[$key] = $this->totalElapsedTime[$key] / max($this->iterationCount[$key], 1);
+    }
+
+    public function stopAll(): void
+    {
+        foreach ($this->getKeys() as $key) {
+            $this->stop($key);
+        }
     }
 
     /**

@@ -14,7 +14,6 @@ class PerformanceCounterTest extends TestCase
     protected function setUp(): void
     {
         $this->unit = PerformanceCounter::getInstance();
-        $this->unit->reset();
     }
 
     protected function tearDown(): void
@@ -32,10 +31,10 @@ class PerformanceCounterTest extends TestCase
         for ($i = 1; $i <= 5; $i++) {
             $this->unit->start($this->counterKey2);
             usleep(random_int(100, 100000));
-            $this->unit->end($this->counterKey2);
+            $this->unit->stop($this->counterKey2);
         }
 
-        $this->unit->end($this->counterKey1);
+        $this->unit->stop($this->counterKey1);
 
         $this->assertGreaterThan(10, $this->unit->elapsedTime($this->counterKey1));
         $this->assertLessThan(100, $this->unit->elapsedTime($this->counterKey2));
@@ -64,5 +63,22 @@ class PerformanceCounterTest extends TestCase
         $this->unit->reset();
 
         $this->assertEmpty($this->unit->getKeys());
+    }
+
+    /** @test */
+    public function all_keys_can_be_ended_at_once(): void
+    {
+        $this->unit->start($this->counterKey1);
+        $this->unit->start($this->counterKey2);
+
+        $key1isRunningAtStart = $this->unit->isRunning($this->counterKey1);
+        $key2isRunningAtStart = $this->unit->isRunning($this->counterKey2);
+
+        $this->unit->stopAll();
+
+        $this->assertTrue($key1isRunningAtStart);
+        $this->assertTrue($key2isRunningAtStart);
+        $this->assertFalse($this->unit->isRunning($this->counterKey1));
+        $this->assertFalse($this->unit->isRunning($this->counterKey2));
     }
 }
