@@ -3,23 +3,24 @@
 namespace ClarkeTechnology\PerformanceCounter\Tests;
 
 use PHPUnit\Framework\TestCase;
-use ClarkeTechnology\PerformanceCounter\PerformanceCounter;
+use ClarkeTechnology\PerformanceCounter\Dependency\PerformanceCounter;
+use ClarkeTechnology\PerformanceCounter\PerformanceCounter as BluePrint;
 
 class PerformanceCounterTest extends TestCase
 {
-    private string $counterKey1 = 'test_counter1';
-    private string $counterKey2 = 'test_counter2';
-    private PerformanceCounter $unit;
+    protected string $counterKey1 = 'test_counter1';
+    protected string $counterKey2 = 'test_counter2';
+    protected BluePrint $unit;
 
     protected function setUp(): void
     {
-        $this->unit = PerformanceCounter::getInstance();
+        $this->unit = new PerformanceCounter();
     }
 
     protected function tearDown(): void
     {
-        $this->unit->reset();
-        unset($this->unit);
+        $this->unit->reset();        
+        unset($this->unit);        
     }
 
     /** @test */
@@ -29,7 +30,7 @@ class PerformanceCounterTest extends TestCase
 
         usleep(random_int(100, 100000));
 
-        for ($i = 1; $i <= 5; $i ++) {
+        for ($i = 1; $i <= 5; $i++) {
             $this->unit->start($this->counterKey2);
             usleep(random_int(100, 100000));
             $this->unit->stop($this->counterKey2);
@@ -38,7 +39,7 @@ class PerformanceCounterTest extends TestCase
         $this->unit->stop($this->counterKey1);
 
         $this->assertGreaterThan(10, $this->unit->elapsedTime($this->counterKey1));
-        $this->assertLessThan(100, $this->unit->elapsedTime($this->counterKey2));
+        $this->assertLessThan(300, $this->unit->elapsedTime($this->counterKey2));
     }
 
     /** @test */

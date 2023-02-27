@@ -2,38 +2,13 @@
 
 namespace ClarkeTechnology\PerformanceCounter;
 
-/**
- * Calculates the average iteration time for a given process
- *
- * Keys can be nested which enables you to measure the performance of inner and outer loops.
- * Designed to be used as a development utility tool. Recommended to be removed from code after use.
- *
- * @see PerformanceCounterTest::average_process_time_can_be_obtained_for_multiple_keys for a demo
- * of how this works
- *
- * @author Gary Clarke <clarketechnologyltd@gmail.com>
- */
-final class PerformanceCounter
+abstract class PerformanceCounter
 {
-    private static ?self $instance = null;
-    private array $start = [];
-    private array $iterationCount = [];
-    private array $totalElapsedTime = [];
-    private array $averageIterationTime = [];
-    private array $isRunning = [];
-
-    private function __construct()
-    {
-    }
-
-    public static function getInstance(): self
-    {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
+    protected array $start = [];
+    protected array $iterationCount = [];
+    protected array $totalElapsedTime = [];
+    protected array $averageIterationTime = [];
+    protected array $isRunning = [];
 
     /**
      * Capture the start time for one iteration for a given key
