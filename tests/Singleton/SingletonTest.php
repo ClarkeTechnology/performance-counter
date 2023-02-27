@@ -2,18 +2,18 @@
 
 namespace ClarkeTechnology\PerformanceCounter\Tests\Singleton;
 
-use ClarkeTechnology\PerformanceCounter\Singleton\PerformanceCounter;
+use ClarkeTechnology\PerformanceCounter\Singleton\Singleton;
 use PHPUnit\Framework\TestCase;
 
-class PerformanceCounterTest extends TestCase
+class SingletonTest extends TestCase
 {
     private string $counterKey1 = 'test_counter1';
     private string $counterKey2 = 'test_counter2';
-    private PerformanceCounter $unit;
+    private Singleton $unit;
 
     protected function setUp(): void
     {
-        $this->unit = PerformanceCounter::getInstance();
+        $this->unit = Singleton::getInstance();
     }
 
     protected function tearDown(): void
