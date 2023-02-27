@@ -2,6 +2,8 @@
 
 namespace ClarkeTechnology\PerformanceCounter\Singleton;
 
+use ClarkeTechnology\PerformanceCounter\PerformanceCounter as BluePrint;
+
 /**
  * Calculates the average iteration time for a given process
  *
@@ -13,7 +15,7 @@ namespace ClarkeTechnology\PerformanceCounter\Singleton;
  *
  * @author Gary Clarke <clarketechnologyltd@gmail.com>
  */
-final class Singleton extends \ClarkeTechnology\PerformanceCounter\PerformanceCounter
+final class PerformanceCounter extends BluePrint
 {
     private static ?self $instance = null;
 
