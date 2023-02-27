@@ -1,9 +1,9 @@
 <?php
 
-namespace ClarkeTechnology\PerformanceCounter\Tests;
+namespace ClarkeTechnology\PerformanceCounter\Tests\Singleton;
 
+use ClarkeTechnology\PerformanceCounter\Singleton\PerformanceCounter;
 use PHPUnit\Framework\TestCase;
-use ClarkeTechnology\PerformanceCounter\PerformanceCounter;
 
 class PerformanceCounterTest extends TestCase
 {

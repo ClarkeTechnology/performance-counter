@@ -1,6 +1,6 @@
 <?php
 
-namespace ClarkeTechnology\PerformanceCounter;
+namespace ClarkeTechnology\PerformanceCounter\Singleton;
 
 /**
  * Calculates the average iteration time for a given process
