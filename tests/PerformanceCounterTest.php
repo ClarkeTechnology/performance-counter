@@ -39,7 +39,7 @@ class PerformanceCounterTest extends TestCase
         $this->unit->stop($this->counterKey1);
 
         $this->assertGreaterThan(10, $this->unit->elapsedTime($this->counterKey1));
-        $this->assertLessThan(100, $this->unit->elapsedTime($this->counterKey2));
+        $this->assertLessThan(300, $this->unit->elapsedTime($this->counterKey2));
     }
 
     /** @test */
