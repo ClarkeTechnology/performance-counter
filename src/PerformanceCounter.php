@@ -9,6 +9,8 @@ abstract class PerformanceCounter
     protected array $totalElapsedTime = [];
     protected array $averageIterationTime = [];
     protected array $isRunning = [];
+    protected array $lapCount = [];
+    protected array $laps = [];
 
     /**
      * Capture the start time for one iteration for a given key
@@ -24,6 +26,7 @@ abstract class PerformanceCounter
         $this->iterationCount[$key] ++;
 
         $this->start[$key] = microtime(true);
+        $this->lapCount[$key] = 0;
     }
 
     public function isRunning($key): bool
@@ -99,5 +102,23 @@ abstract class PerformanceCounter
     public function getKeys(): array
     {
         return array_keys($this->iterationCount);
+    }
+
+    public function lap($key): array
+    {
+        $lapTime = microtime(true);
+
+        $this->lapCount[$key]++;
+
+        $this->laps[$key][$this->lapCount[$key]] = round($lapTime - $this->start[$key], 3) * 1000;
+
+        return [
+            $this->lapCount[$key] => round($lapTime - $this->start[$key], 3) * 1000
+        ];
+    }
+
+    public function laps($key): array
+    {
+        return $this->laps[$key];
     }
 }
