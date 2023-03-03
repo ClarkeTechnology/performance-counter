@@ -98,4 +98,34 @@ class PerformanceCounterTest extends TestCase
             $this->counterKey2 => 0.0
         ], $this->unit->all());
     }
+
+    /** @test */
+    public function a_lap_time_can_be_retrieved(): void
+    {
+        $this->unit->start($this->counterKey1);
+
+        $lapTimes = [];
+
+        for ($i = 1; $i <= 5; $i++) {
+            usleep(random_int(100, 100000));
+            $lapTimes[$i] = $this->unit->lap($this->counterKey1);
+        }
+
+        $this->assertCount(5, $lapTimes);
+
+        $this->assertSame([1, 2, 3, 4, 5], array_keys($this->unit->laps($this->counterKey1)));
+
+        $this->assertTrue(
+            $this->unit->laps($this->counterKey1)[1] <
+            $this->unit->laps($this->counterKey1)[2]);
+        $this->assertTrue(
+            $this->unit->laps($this->counterKey1)[2] <
+            $this->unit->laps($this->counterKey1)[3]);
+        $this->assertTrue(
+            $this->unit->laps($this->counterKey1)[3] <
+            $this->unit->laps($this->counterKey1)[4]);
+        $this->assertTrue(
+            $this->unit->laps($this->counterKey1)[4] <
+            $this->unit->laps($this->counterKey1)[5]);
+    }
 }
