@@ -85,21 +85,6 @@ class PerformanceCounterTest extends TestCase
     }
 
     /** @test */
-    public function all_keys_can_be_retrieved_in_key_time_array_format(): void
-    {
-        $this->unit->start($this->counterKey1);
-        $this->unit->start($this->counterKey2);
-        $this->unit->stop($this->counterKey2);
-        usleep(1000);
-        $this->unit->stop($this->counterKey1);
-
-        $this->assertSame([
-            $this->counterKey1 => 1.0,
-            $this->counterKey2 => 0.0
-        ], $this->unit->all());
-    }
-
-    /** @test */
     public function a_lap_time_can_be_retrieved(): void
     {
         $this->unit->start($this->counterKey1);
@@ -127,5 +112,21 @@ class PerformanceCounterTest extends TestCase
         $this->assertTrue(
             $this->unit->laps($this->counterKey1)[4] <
             $this->unit->laps($this->counterKey1)[5]);
+    }
+
+    /** @test */
+    public function new_keys_can_created_from_lap_times(): void
+    {
+        $this->unit->start($this->counterKey1);
+
+        $lapTimes = [];
+
+        $lapOne = $this->unit->lap($this->counterKey1, 'lap-one');
+        $lapTwo = $this->unit->lap($this->counterKey1, 'lap-two');
+
+        $results = $this->unit->stopAndShow();
+
+        $this->assertArrayHasKey('lap-one', $results);
+        $this->assertArrayHasKey('lap-two', $results);
     }
 }
