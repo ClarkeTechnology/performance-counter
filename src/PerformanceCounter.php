@@ -127,10 +127,12 @@ abstract class PerformanceCounter
 
         $this->lapCount[$key]++;
 
-        $this->laps[$key][$this->lapCount[$key]] = round($lapTime - $this->start[$key], 3) * 1000;
+        $lapKey = $this->lapCount[$key].':'.$newKey;
+
+        $this->laps[$key][$lapKey] = round($lapTime - $this->start[$key], 3) * 1000;
 
         return [
-            $this->lapCount[$key] => round($lapTime - $this->start[$key], 3) * 1000
+            $lapKey => round($lapTime - $this->start[$key], 3) * 1000
         ];
     }
 
