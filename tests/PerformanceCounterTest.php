@@ -98,28 +98,26 @@ class PerformanceCounterTest extends TestCase
 
         $this->assertCount(5, $lapTimes);
 
-        $this->assertSame([1, 2, 3, 4, 5], array_keys($this->unit->laps($this->counterKey1)));
+        $this->assertSame(['1:', '2:', '3:', '4:', '5:'], array_keys($this->unit->laps($this->counterKey1)));
 
         $this->assertTrue(
-            $this->unit->laps($this->counterKey1)[1] <
-            $this->unit->laps($this->counterKey1)[2]);
+            $this->unit->laps($this->counterKey1)['1:'] <
+            $this->unit->laps($this->counterKey1)['2:']);
         $this->assertTrue(
-            $this->unit->laps($this->counterKey1)[2] <
-            $this->unit->laps($this->counterKey1)[3]);
+            $this->unit->laps($this->counterKey1)['2:'] <
+            $this->unit->laps($this->counterKey1)['3:']);
         $this->assertTrue(
-            $this->unit->laps($this->counterKey1)[3] <
-            $this->unit->laps($this->counterKey1)[4]);
+            $this->unit->laps($this->counterKey1)['3:'] <
+            $this->unit->laps($this->counterKey1)['4:']);
         $this->assertTrue(
-            $this->unit->laps($this->counterKey1)[4] <
-            $this->unit->laps($this->counterKey1)[5]);
+            $this->unit->laps($this->counterKey1)['4:'] <
+            $this->unit->laps($this->counterKey1)['5:']);
     }
 
     /** @test */
     public function new_keys_can_created_from_lap_times(): void
     {
         $this->unit->start($this->counterKey1);
-
-        $lapTimes = [];
 
         $lapOne = $this->unit->lap($this->counterKey1, 'lap-one');
         $lapTwo = $this->unit->lap($this->counterKey1, 'lap-two');
@@ -128,5 +126,17 @@ class PerformanceCounterTest extends TestCase
 
         $this->assertArrayHasKey('lap-one', $results);
         $this->assertArrayHasKey('lap-two', $results);
+    }
+
+    /** @test */
+    public function lapkeys_are_created_correctly(): void
+    {
+        $this->unit->start($this->counterKey1);
+
+        $lapOne = $this->unit->lap($this->counterKey1, 'lap-one');
+        $lapTwo = $this->unit->lap($this->counterKey1, 'lap-two');
+
+        $this->assertEquals('1:lap-one', key($lapOne));
+        $this->assertEquals('2:lap-two', key($lapTwo));
     }
 }
