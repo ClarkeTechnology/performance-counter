@@ -116,7 +116,7 @@ final class PerformanceCounter
             'start' => $this->start[$key],
             'total_elapsed_time' => $this->totalElapsedTime[$key],
             'lap_count' => $this->lapCount[$key],
-            'average_lap_time' => $this->averageLapTime[$key],
+            'average_lap_time' => $this->averageLapTime($key),
             'laps' => $this->laps($key)
         ];
     }
