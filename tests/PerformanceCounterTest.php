@@ -7,8 +7,9 @@ use ClarkeTechnology\PerformanceCounter\PerformanceCounter;
 
 class PerformanceCounterTest extends TestCase
 {
-    protected string $counterKey1 = 'test_counter1';
-    protected string $counterKey2 = 'test_counter2';
+    private string $counterKey1 = 'test_counter1';
+    private string $counterKey2 = 'test_counter2';
+    private PerformanceCounter $unit;
 
     protected function setUp(): void
     {
@@ -24,15 +25,18 @@ class PerformanceCounterTest extends TestCase
     /** @test */
     public function average_lap_time_can_be_obtained(): void
     {
+        $this->unit->start($this->counterKey1);
+
         for ($i = 1; $i <= 5; $i++) {
-            $this->unit->start($this->counterKey1);
             usleep(random_int(100, 1000));
             $this->unit->lap($this->counterKey1);
         }
 
         $averageLapTime = $this->unit->averageLapTime($this->counterKey1);
 
-        dd($averageLapTime);
+        $this->assertGreaterThan(1, $averageLapTime);
+        $this->assertLessThan(5, $averageLapTime);
+        $this->assertIsFloat($averageLapTime);
     }
 
     /** @test */
@@ -40,18 +44,18 @@ class PerformanceCounterTest extends TestCase
     {
         $this->unit->start($this->counterKey1);
 
-        usleep(random_int(100, 100000));
+        usleep(random_int(100, 1000));
 
+        $this->unit->start($this->counterKey2);
         for ($i = 1; $i <= 5; $i++) {
-            $this->unit->start($this->counterKey2);
-            usleep(random_int(100, 100000));
-            $this->unit->stop($this->counterKey2);
+            usleep(random_int(100, 1000));
+            $this->unit->lap($this->counterKey2);
         }
 
         $this->unit->stop($this->counterKey1);
 
-        $this->assertGreaterThan(10, $this->unit->elapsedTime($this->counterKey1));
-        $this->assertLessThan(300, $this->unit->elapsedTime($this->counterKey2));
+        $this->assertGreaterThan(1, $this->unit->elapsedTime($this->counterKey1));
+        $this->assertLessThan(20, $this->unit->elapsedTime($this->counterKey2));
     }
 
     /** @test */

@@ -5,9 +5,8 @@ namespace ClarkeTechnology\PerformanceCounter;
 final class PerformanceCounter
 {
     protected array $start = [];
-    protected array $iterationCount = [];
     protected array $totalElapsedTime = [];
-    protected array $averageIterationTime = [];
+    protected array $averageLapTime = [];
     protected array $isRunning = [];
     protected array $lapCount = [];
     protected array $laps = [];
@@ -26,16 +25,13 @@ final class PerformanceCounter
      */
     public function start($key): void
     {
-        if (!isset($this->iterationCount[$key])) {
-            $this->iterationCount[$key] = 0;
+        if (!isset($this->start[$key])) {
+            $this->start[$key] = microtime(true);
+            $this->lapCount[$key] = 0;
             $this->totalElapsedTime[$key] = 0;
+            $this->averageLapTime[$key] = 0;
             $this->isRunning[$key] = true;
         }
-
-        $this->iterationCount[$key]++;
-
-        $this->start[$key] = microtime(true);
-        $this->lapCount[$key] = 0;
     }
 
     public function isRunning($key): bool
@@ -47,7 +43,7 @@ final class PerformanceCounter
     {
         $this->stopAll();
 
-        return $this->all();
+        return $this->allAverageLapTimes();
     }
 
     public function stopAll(): void
@@ -59,15 +55,12 @@ final class PerformanceCounter
 
     public function getKeys(): array
     {
-        return array_keys($this->iterationCount);
+        return array_keys($this->start);
     }
 
-    /**
-     * Capture the end time for one iteration for a given key
-     */
     public function stop($key): void
     {
-        $endTime = microtime(true);
+        $stopTime = microtime(true);
 
         if (!$this->isRunning[$key]) {
             return;
@@ -75,54 +68,56 @@ final class PerformanceCounter
 
         $this->isRunning[$key] = false;
 
-        $this->totalElapsedTime[$key] += ($endTime - $this->start[$key]) * $this->multiplier;
+        $this->totalElapsedTime[$key] += ($stopTime - $this->start[$key]) * $this->multiplier;
 
-        $this->averageIterationTime[$key] = $this->totalElapsedTime[$key] / max($this->iterationCount[$key], 1);
+        $this->averageLapTime[$key] = $this->averageLapTime($key);
     }
 
-    public function all(): array
+    public function allAverageLapTimes(): array
+    {
+        return array_combine($this->getKeys(), $this->averageLapTime);
+    }
+
+    public function allElapsedTimes(): array
     {
         return array_combine($this->getKeys(), $this->totalElapsedTime);
     }
 
-    /**
-     * Elapsed time between start and stop
-     *
-     * If started and stopped within a loop, the average iteration time will be returned
-     */
     public function elapsedTime($key): float
     {
-        return $this->averageIterationTime[$key];
+        return $this->totalElapsedTime[$key];
     }
 
     public function clearKey($key): void
     {
         unset(
             $this->start[$key],
-            $this->iterationCount[$key],
             $this->totalElapsedTime[$key],
-            $this->averageIterationTime[$key],
+            $this->averageLapTime[$key],
             $this->lapCount[$key],
+            $this->isRunning[$key],
+            $this->laps[$key],
         );
     }
 
     public function reset(): void
     {
         $this->start = [];
-        $this->iterationCount = [];
         $this->totalElapsedTime = [];
-        $this->averageIterationTime = [];
+        $this->averageLapTime = [];
         $this->lapCount = [];
+        $this->isRunning = [];
+        $this->laps = [];
     }
 
     public function get($key): array
     {
         return [
             'start' => $this->start[$key],
-            'iteration_count' => $this->iterationCount[$key],
             'total_elapsed_time' => $this->totalElapsedTime[$key],
-            'average_iteration_time' => $this->averageIterationTime[$key],
             'lap_count' => $this->lapCount[$key],
+            'average_lap_time' => $this->averageLapTime[$key],
+            'laps' => $this->laps($key)
         ];
     }
 
@@ -147,27 +142,34 @@ final class PerformanceCounter
 
         $this->totalElapsedTime[$key] += $lapTime;
 
+        $this->averageLapTime[$key] = $this->averageLapTime($key);
+
         return [
             $lapKey => $lapTime
         ];
     }
 
+    public function averageLapTime($key): float
+    {
+        return $this->totalElapsedTime[$key] / max($this->lapCount[$key], 1);
+    }
+
     public function setFrozenKey($key, $elapsedTime): void
     {
-        if (array_key_exists($key, $this->iterationCount)) {
+        if (array_key_exists($key, $this->start)) {
             throw new \RuntimeException("Unable to set frozen key because the key $key already exists");
         }
 
-        $this->start[$key] = $elapsedTime;
-        $this->iterationCount[$key] = 1;
+        $this->start[$key] = microtime(true);
         $this->totalElapsedTime[$key] = $elapsedTime;
-        $this->averageIterationTime[$key] = $elapsedTime;
         $this->isRunning[$key] = false;
         $this->lapCount[$key] = 1;
+        $this->averageLapTime[$key] = $elapsedTime;
+        $this->laps[$key] = [];
     }
 
     public function laps($key): array
     {
-        return $this->laps[$key];
+        return $this->laps[$key] ?? [];
     }
 }
