@@ -7,8 +7,9 @@ use ClarkeTechnology\PerformanceCounter\PerformanceCounter;
 
 class PerformanceCounterTest extends TestCase
 {
-    protected string $counterKey1 = 'test_counter1';
-    protected string $counterKey2 = 'test_counter2';
+    private string $counterKey1 = 'test_counter1';
+    private string $counterKey2 = 'test_counter2';
+    private PerformanceCounter $unit;
 
     protected function setUp(): void
     {
@@ -22,22 +23,39 @@ class PerformanceCounterTest extends TestCase
     }
 
     /** @test */
+    public function average_lap_time_can_be_obtained(): void
+    {
+        $this->unit->start($this->counterKey1);
+
+        for ($i = 1; $i <= 5; $i++) {
+            usleep(random_int(100, 1000));
+            $this->unit->lap($this->counterKey1);
+        }
+
+        $averageLapTime = $this->unit->averageLapTime($this->counterKey1);
+
+        $this->assertGreaterThan(1, $averageLapTime);
+        $this->assertLessThan(5, $averageLapTime);
+        $this->assertIsFloat($averageLapTime);
+    }
+
+    /** @test */
     public function average_process_time_can_be_obtained_for_multiple_keys(): void
     {
         $this->unit->start($this->counterKey1);
 
-        usleep(random_int(100, 100000));
+        usleep(random_int(100, 1000));
 
+        $this->unit->start($this->counterKey2);
         for ($i = 1; $i <= 5; $i++) {
-            $this->unit->start($this->counterKey2);
-            usleep(random_int(100, 100000));
-            $this->unit->stop($this->counterKey2);
+            usleep(random_int(100, 1000));
+            $this->unit->lap($this->counterKey2);
         }
 
         $this->unit->stop($this->counterKey1);
 
-        $this->assertGreaterThan(10, $this->unit->elapsedTime($this->counterKey1));
-        $this->assertLessThan(300, $this->unit->elapsedTime($this->counterKey2));
+        $this->assertGreaterThan(1, $this->unit->elapsedTime($this->counterKey1));
+        $this->assertLessThan(20, $this->unit->elapsedTime($this->counterKey2));
     }
 
     /** @test */
@@ -90,7 +108,7 @@ class PerformanceCounterTest extends TestCase
         $lapTimes = [];
 
         for ($i = 1; $i <= 5; $i++) {
-            usleep(random_int(100, 100000));
+            usleep(random_int(100, 1000));
             $lapTimes[$i] = $this->unit->lap($this->counterKey1);
         }
 
@@ -136,5 +154,35 @@ class PerformanceCounterTest extends TestCase
 
         $this->assertEquals('1:lap-one', key($lapOne));
         $this->assertEquals('2:lap-two', key($lapTwo));
+    }
+
+    /** @test */
+    public function the_counter_is_started_by_lap_if_the_key_does_not_exist(): void
+    {
+        $start = $this->unit->lap($this->counterKey1, 'start');
+        $lap1 = $this->unit->lap($this->counterKey1, 'lap');
+
+        $this->assertEquals('0:start', key($start));
+        $this->assertEquals('1:lap', key($lap1));
+    }
+
+    /** @test */
+    public function all_data_can_be_retrieved_for_a_given_key(): void
+    {
+        $this->unit->start($this->counterKey1);
+
+        for ($i = 1; $i <= 5; $i++) {
+            usleep(random_int(100, 1000));
+            $this->unit->lap($this->counterKey1, "lap-$i");
+        }
+
+        $data = $this->unit->get($this->counterKey1);
+
+        $this->assertArrayHasKey('start', $data);
+        $this->assertArrayHasKey('total_elapsed_time', $data);
+        $this->assertArrayHasKey('lap_count', $data);
+        $this->assertArrayHasKey('average_lap_time', $data);
+        $this->assertArrayHasKey('laps', $data);
+        $this->assertIsArray($data['laps']);
     }
 }
