@@ -108,7 +108,7 @@ class PerformanceCounterTest extends TestCase
         $lapTimes = [];
 
         for ($i = 1; $i <= 5; $i++) {
-            usleep(random_int(100, 100000));
+            usleep(random_int(100, 1000));
             $lapTimes[$i] = $this->unit->lap($this->counterKey1);
         }
 
