@@ -128,20 +128,27 @@ final class PerformanceCounter
 
     public function lap($key, $newKey = null): array
     {
-        $lapTime = microtime(true);
-
-        if ($newKey) {
-            $this->setFrozenKey($newKey, $lapTime);
+        if (!isset($this->start[$key])) {
+            $this->start($key);
+            return ['0:'.$newKey => 0];
         }
 
-        $this->lapCount[$key]++;
+        $lapCapture = microtime(true);
 
-        $lapKey = $this->lapCount[$key].':'.$newKey;
+        if ($newKey) {
+            $this->setFrozenKey($newKey, $lapCapture);
+        }
 
-        $this->laps[$key][$lapKey] = ($lapTime - $this->start[$key]) * $this->multiplier;
+        $lapTime = ($lapCapture - $this->start[$key]) * $this->multiplier;
+
+        $lapKey = ++$this->lapCount[$key].':'.$newKey;
+
+        $this->laps[$key][$lapKey] = $lapTime;
+
+        $this->totalElapsedTime[$key] += $lapTime;
 
         return [
-            $lapKey => $lapTime - $this->start[$key]
+            $lapKey => $lapTime
         ];
     }
 

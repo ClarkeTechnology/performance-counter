@@ -22,6 +22,20 @@ class PerformanceCounterTest extends TestCase
     }
 
     /** @test */
+    public function average_lap_time_can_be_obtained(): void
+    {
+        for ($i = 1; $i <= 5; $i++) {
+            $this->unit->start($this->counterKey1);
+            usleep(random_int(100, 1000));
+            $this->unit->lap($this->counterKey1);
+        }
+
+        $averageLapTime = $this->unit->averageLapTime($this->counterKey1);
+
+        dd($averageLapTime);
+    }
+
+    /** @test */
     public function average_process_time_can_be_obtained_for_multiple_keys(): void
     {
         $this->unit->start($this->counterKey1);
@@ -136,5 +150,15 @@ class PerformanceCounterTest extends TestCase
 
         $this->assertEquals('1:lap-one', key($lapOne));
         $this->assertEquals('2:lap-two', key($lapTwo));
+    }
+
+    /** @test */
+    public function the_counter_is_started_by_lap_if_the_key_does_not_exist(): void
+    {
+        $start = $this->unit->lap($this->counterKey1, 'start');
+        $lap1 = $this->unit->lap($this->counterKey1, 'lap');
+
+        $this->assertEquals('0:start', key($start));
+        $this->assertEquals('1:lap', key($lap1));
     }
 }
