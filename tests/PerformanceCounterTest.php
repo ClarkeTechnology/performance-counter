@@ -178,11 +178,7 @@ class PerformanceCounterTest extends TestCase
 
         $data = $this->unit->get($this->counterKey1);
 
-        $this->assertArrayHasKey('start', $data);
-        $this->assertArrayHasKey('total_elapsed_time', $data);
-        $this->assertArrayHasKey('lap_count', $data);
-        $this->assertArrayHasKey('average_lap_time', $data);
-        $this->assertArrayHasKey('laps', $data);
+        $this->assertEquals(['start', 'total_elapsed_time', 'lap_count', 'average_lap_time', 'laps'], array_keys($data));
         $this->assertIsArray($data['laps']);
     }
 }
