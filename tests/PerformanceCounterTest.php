@@ -165,4 +165,24 @@ class PerformanceCounterTest extends TestCase
         $this->assertEquals('0:start', key($start));
         $this->assertEquals('1:lap', key($lap1));
     }
+
+    /** @test */
+    public function all_data_can_be_retrieved_for_a_given_key(): void
+    {
+        $this->unit->start($this->counterKey1);
+
+        for ($i = 1; $i <= 5; $i++) {
+            usleep(random_int(100, 1000));
+            $this->unit->lap($this->counterKey1, "lap-$i");
+        }
+
+        $data = $this->unit->get($this->counterKey1);
+
+        $this->assertArrayHasKey('start', $data);
+        $this->assertArrayHasKey('total_elapsed_time', $data);
+        $this->assertArrayHasKey('lap_count', $data);
+        $this->assertArrayHasKey('average_lap_time', $data);
+        $this->assertArrayHasKey('laps', $data);
+        $this->assertIsArray($data['laps']);
+    }
 }

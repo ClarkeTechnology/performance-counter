@@ -4,12 +4,12 @@ namespace ClarkeTechnology\PerformanceCounter;
 
 final class PerformanceCounter
 {
-    protected array $start = [];
-    protected array $totalElapsedTime = [];
-    protected array $averageLapTime = [];
-    protected array $isRunning = [];
-    protected array $lapCount = [];
-    protected array $laps = [];
+    private array $start = [];
+    private array $totalElapsedTime = [];
+    private array $averageLapTime = [];
+    private array $isRunning = [];
+    private array $lapCount = [];
+    private array $laps = [];
     private int $multiplier;
 
     /**
@@ -20,9 +20,6 @@ final class PerformanceCounter
         $this->multiplier = $multiplier;
     }
 
-    /**
-     * Capture the start time for one iteration for a given key
-     */
     public function start($key): void
     {
         if (!isset($this->start[$key])) {
