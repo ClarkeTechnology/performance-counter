@@ -3,14 +3,12 @@
 namespace ClarkeTechnology\PerformanceCounter\Tests;
 
 use PHPUnit\Framework\TestCase;
-use ClarkeTechnology\PerformanceCounter\Dependency\PerformanceCounter;
-use ClarkeTechnology\PerformanceCounter\PerformanceCounter as BluePrint;
+use ClarkeTechnology\PerformanceCounter\PerformanceCounter;
 
 class PerformanceCounterTest extends TestCase
 {
     protected string $counterKey1 = 'test_counter1';
     protected string $counterKey2 = 'test_counter2';
-    protected BluePrint $unit;
 
     protected function setUp(): void
     {
