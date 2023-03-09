@@ -2,7 +2,7 @@
 
 namespace ClarkeTechnology\PerformanceCounter;
 
-abstract class PerformanceCounter
+final class PerformanceCounter
 {
     protected array $start = [];
     protected array $iterationCount = [];
@@ -11,6 +11,15 @@ abstract class PerformanceCounter
     protected array $isRunning = [];
     protected array $lapCount = [];
     protected array $laps = [];
+    private int $multiplier;
+
+    /**
+     * @param int $multiplier ms = 1000, µs = 1000000
+     */
+    public function __construct(int $multiplier = 1000)
+    {
+        $this->multiplier = $multiplier;
+    }
 
     /**
      * Capture the start time for one iteration for a given key
@@ -66,7 +75,7 @@ abstract class PerformanceCounter
 
         $this->isRunning[$key] = false;
 
-        $this->totalElapsedTime[$key] += round($endTime - $this->start[$key], 3) * 1000;
+        $this->totalElapsedTime[$key] += ($endTime - $this->start[$key]) * $this->multiplier;
 
         $this->averageIterationTime[$key] = $this->totalElapsedTime[$key] / max($this->iterationCount[$key], 1);
     }
@@ -129,10 +138,10 @@ abstract class PerformanceCounter
 
         $lapKey = $this->lapCount[$key].':'.$newKey;
 
-        $this->laps[$key][$lapKey] = round($lapTime - $this->start[$key], 3) * 1000;
+        $this->laps[$key][$lapKey] = ($lapTime - $this->start[$key]) * $this->multiplier;
 
         return [
-            $lapKey => round($lapTime - $this->start[$key], 3) * 1000
+            $lapKey => $lapTime - $this->start[$key]
         ];
     }
 
