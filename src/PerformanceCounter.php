@@ -20,7 +20,7 @@ final class PerformanceCounter
         $this->multiplier = $multiplier;
     }
 
-    public function start($key): void
+    private function start($key): void
     {
         if (!isset($this->start[$key])) {
             $this->start[$key] = microtime(true);
@@ -122,7 +122,7 @@ final class PerformanceCounter
     {
         if (!isset($this->start[$key])) {
             $this->start($key);
-            $lapKey = $key.':0:'.$newKey;
+            $lapKey = $key .':0:'. $newKey;
             $this->laps[$key][$lapKey] = 0;
             return [$lapKey => 0];
         }
@@ -131,7 +131,7 @@ final class PerformanceCounter
 
         $lapTime = ($lapCapture - $this->start[$key]) * $this->multiplier;
 
-        $lapKey = $key .':'. ++$this->lapCount[$key].':'.$newKey;
+        $lapKey = $key .':'. ++$this->lapCount[$key] .':'. $newKey;
 
         $this->laps[$key][$lapKey] = $lapTime;
 
@@ -151,6 +151,6 @@ final class PerformanceCounter
 
     public function laps($key): array
     {
-        return $this->laps[$key] ?? [];
+        return $this->laps[$key];
     }
 }
