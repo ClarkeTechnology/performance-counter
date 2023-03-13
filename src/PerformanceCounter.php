@@ -9,7 +9,7 @@ final class PerformanceCounter
     private array $averageLapTime = [];
     private array $isRunning = [];
     private array $lapCount = [];
-    private array $laps = [];
+    private array $timings = [];
     private int $multiplier;
 
     /**
@@ -93,7 +93,7 @@ final class PerformanceCounter
             $this->averageLapTime[$key],
             $this->lapCount[$key],
             $this->isRunning[$key],
-            $this->laps[$key],
+            $this->timings[$key],
         );
     }
 
@@ -104,7 +104,7 @@ final class PerformanceCounter
         $this->averageLapTime = [];
         $this->lapCount = [];
         $this->isRunning = [];
-        $this->laps = [];
+        $this->timings = [];
     }
 
     public function get($key): array
@@ -114,16 +114,16 @@ final class PerformanceCounter
             'total_elapsed_time' => $this->totalElapsedTime[$key],
             'lap_count' => $this->lapCount[$key],
             'average_lap_time' => $this->averageLapTime($key),
-            'laps' => $this->laps($key)
+            'laps' => $this->getTimings($key)
         ];
     }
 
-    public function lap($key, $newKey = null): array
+    public function clock($key, $newKey = null): array
     {
         if (!isset($this->start[$key])) {
             $this->start($key);
             $lapKey = $key .':0:'. $newKey;
-            $this->laps[$key][$lapKey] = 0;
+            $this->timings[$key][$lapKey] = 0;
             return [$lapKey => 0];
         }
 
@@ -133,7 +133,7 @@ final class PerformanceCounter
 
         $lapKey = $key .':'. ++$this->lapCount[$key] .':'. $newKey;
 
-        $this->laps[$key][$lapKey] = $lapTime;
+        $this->timings[$key][$lapKey] = $lapTime;
 
         $this->totalElapsedTime[$key] += $lapTime;
 
@@ -149,8 +149,8 @@ final class PerformanceCounter
         return $this->totalElapsedTime[$key] / max($this->lapCount[$key], 1);
     }
 
-    public function laps($key): array
+    public function getTimings($key): array
     {
-        return $this->laps[$key];
+        return $this->timings[$key];
     }
 }
