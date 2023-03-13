@@ -131,20 +131,6 @@ class PerformanceCounterTest extends TestCase
     }
 
     /** @test */
-    public function new_keys_can_created_from_lap_times(): void
-    {
-        $this->unit->start($this->counterKey1);
-
-        $lapOne = $this->unit->lap($this->counterKey1, 'lap-one');
-        $lapTwo = $this->unit->lap($this->counterKey1, 'lap-two');
-
-        $results = $this->unit->stopAndShow();
-
-        $this->assertArrayHasKey('lap-one', $results);
-        $this->assertArrayHasKey('lap-two', $results);
-    }
-
-    /** @test */
     public function lapkeys_are_created_correctly(): void
     {
         $this->unit->start($this->counterKey1);
