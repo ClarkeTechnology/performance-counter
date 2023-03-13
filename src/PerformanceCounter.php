@@ -122,14 +122,16 @@ final class PerformanceCounter
     {
         if (!isset($this->start[$key])) {
             $this->start($key);
-            return ['0:'.$newKey => 0];
+            $lapKey = $key.':0:'.$newKey;
+            $this->laps[$key][$lapKey] = 0;
+            return [$lapKey => 0];
         }
 
         $lapCapture = microtime(true);
 
         $lapTime = ($lapCapture - $this->start[$key]) * $this->multiplier;
 
-        $lapKey = ++$this->lapCount[$key].':'.$newKey;
+        $lapKey = $key .':'. ++$this->lapCount[$key].':'.$newKey;
 
         $this->laps[$key][$lapKey] = $lapTime;
 

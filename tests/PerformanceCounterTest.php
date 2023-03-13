@@ -114,20 +114,26 @@ class PerformanceCounterTest extends TestCase
 
         $this->assertCount(5, $lapTimes);
 
-        $this->assertSame(['1:', '2:', '3:', '4:', '5:'], array_keys($this->unit->laps($this->counterKey1)));
+        $this->assertSame([
+            $this->counterKey1.':1:',
+            $this->counterKey1.':2:',
+            $this->counterKey1.':3:',
+            $this->counterKey1.':4:',
+            $this->counterKey1.':5:'
+        ], array_keys($this->unit->laps($this->counterKey1)));
 
         $this->assertTrue(
-            $this->unit->laps($this->counterKey1)['1:'] <
-            $this->unit->laps($this->counterKey1)['2:']);
+            $this->unit->laps($this->counterKey1)[$this->counterKey1.':1:'] <
+            $this->unit->laps($this->counterKey1)[$this->counterKey1.':2:']);
         $this->assertTrue(
-            $this->unit->laps($this->counterKey1)['2:'] <
-            $this->unit->laps($this->counterKey1)['3:']);
+            $this->unit->laps($this->counterKey1)[$this->counterKey1.':2:'] <
+            $this->unit->laps($this->counterKey1)[$this->counterKey1.':3:']);
         $this->assertTrue(
-            $this->unit->laps($this->counterKey1)['3:'] <
-            $this->unit->laps($this->counterKey1)['4:']);
+            $this->unit->laps($this->counterKey1)[$this->counterKey1.':3:'] <
+            $this->unit->laps($this->counterKey1)[$this->counterKey1.':4:']);
         $this->assertTrue(
-            $this->unit->laps($this->counterKey1)['4:'] <
-            $this->unit->laps($this->counterKey1)['5:']);
+            $this->unit->laps($this->counterKey1)[$this->counterKey1.':4:'] <
+            $this->unit->laps($this->counterKey1)[$this->counterKey1.':5:']);
     }
 
     /** @test */
@@ -138,8 +144,8 @@ class PerformanceCounterTest extends TestCase
         $lapOne = $this->unit->lap($this->counterKey1, 'lap-one');
         $lapTwo = $this->unit->lap($this->counterKey1, 'lap-two');
 
-        $this->assertEquals('1:lap-one', key($lapOne));
-        $this->assertEquals('2:lap-two', key($lapTwo));
+        $this->assertEquals($this->counterKey1.':1:lap-one', key($lapOne));
+        $this->assertEquals($this->counterKey1.':2:lap-two', key($lapTwo));
     }
 
     /** @test */
@@ -148,8 +154,8 @@ class PerformanceCounterTest extends TestCase
         $start = $this->unit->lap($this->counterKey1, 'start');
         $lap1 = $this->unit->lap($this->counterKey1, 'lap');
 
-        $this->assertEquals('0:start', key($start));
-        $this->assertEquals('1:lap', key($lap1));
+        $this->assertEquals($this->counterKey1.':0:start', key($start));
+        $this->assertEquals($this->counterKey1.':1:lap', key($lap1));
     }
 
     /** @test */
