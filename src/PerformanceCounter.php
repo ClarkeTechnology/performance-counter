@@ -127,10 +127,6 @@ final class PerformanceCounter
 
         $lapCapture = microtime(true);
 
-        if ($newKey) {
-            $this->setFrozenKey($newKey, $lapCapture);
-        }
-
         $lapTime = ($lapCapture - $this->start[$key]) * $this->multiplier;
 
         $lapKey = ++$this->lapCount[$key].':'.$newKey;
@@ -149,20 +145,6 @@ final class PerformanceCounter
     public function averageLapTime($key): float
     {
         return $this->totalElapsedTime[$key] / max($this->lapCount[$key], 1);
-    }
-
-    public function setFrozenKey($key, $elapsedTime): void
-    {
-        if (array_key_exists($key, $this->start)) {
-            throw new \RuntimeException("Unable to set frozen key because the key $key already exists");
-        }
-
-        $this->start[$key] = microtime(true);
-        $this->totalElapsedTime[$key] = $elapsedTime;
-        $this->isRunning[$key] = false;
-        $this->lapCount[$key] = 1;
-        $this->averageLapTime[$key] = $elapsedTime;
-        $this->laps[$key] = [];
     }
 
     public function laps($key): array
